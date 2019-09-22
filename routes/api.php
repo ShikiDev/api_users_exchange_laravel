@@ -16,7 +16,11 @@ use App\User;
 */
 
 //Route::get('/news/sync','UsersController@sync')->name('sync');
-Route::get('/user_sync', function () {
+Route::get('/user_sync', function (Request $request) {
+    $secret_word = env('API_TOKEN_SECRET');
+    $bearer_token = $request->bearerToken();
+    if ($bearer_token == null or base64_encode($secret_word) != $bearer_token) abort('404');
+
     return UserResource::collection(User::paginate(100));
 });
 
